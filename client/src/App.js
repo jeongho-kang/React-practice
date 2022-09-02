@@ -32,7 +32,7 @@ const customers = [{
   'id': 2,
   'image' : 'https://placeimg.com/64/64/2',
   'name': '홍길동',
-  'birthday' : 560407,
+  'birthday' : 450204,
   'gender' : '남자',
   'job' : '개발자'
 },
