@@ -8,6 +8,8 @@ import TableBody from '@mui/material/TableBody'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import { withStyles } from '@material-ui/core/styles';
+import { CircularProgress } from '@mui/material';
+import { ThemeProvider } from '@emotion/react';
 
 const styles = theme => ({
   root : {
@@ -17,36 +19,40 @@ const styles = theme => ({
   },
   table : {
     minWidth: 1000
+  },
+  Progress : {
+    margin:theme.spacing.unit *2
   }
-})
+});
 
-const customers = [{
-  'id': 1,
-  'image' : 'https://placeimg.com/64/64/1',
-  'name': '강정호',
-  'birthday' : 980307,
-  'gender' : '남자',
-  'job' : '대학생'
-},
-{
-  'id': 2,
-  'image' : 'https://placeimg.com/64/64/2',
-  'name': '홍길동',
-  'birthday' : 450204,
-  'gender' : '남자',
-  'job' : '개발자'
-},
-{
-  'id': 3,
-  'image' : 'https://placeimg.com/64/64/3',
-  'name': '이순신',
-  'birthday' : 950512,
-  'gender' : '남자',
-  'job' : '충무공'
-}
-]
+
+
+// props 는 변경할 수 없는 데이터를 명시할 때 사용하고
+// state 는 변경할 수 있는 데이터를 명시할 떄 사용한다.
 
 class App extends Component {
+  state={
+    customers : "",
+    completed : 0
+  }
+  // 실제 api 서버에 접근하도록 componentDidMount 를 사용한다.
+  componentDidMount() {
+    this.timer=setInterval(this.progress, 20); // 0.02초마다 프로그레스 설정
+    this.callApi()
+    .then(res => this.setState({customers:res}))
+    .catch(err => console.log(err));
+  }
+  // api 불러오기 (비동기적 수행)
+  callApi = async() => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+  progress =() => {
+    const {completed} = this.state;
+    this.setState({completed:completed >=100 ? 0 : completed +1});
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -63,7 +69,7 @@ class App extends Component {
             </TableRow>
           </TableHead> 
           <TableBody>
-        {customers.map(c => {
+        {this.state.customers? this.state.customers.map(c => {
             return(
               <Customer 
               key={c.id}
@@ -75,8 +81,12 @@ class App extends Component {
               job={c.job} 
               />
              );
-            }
-          )
+          }) :
+          <TableRow>
+            <TableCell colspan="6" align="center">
+              <CircularProgress className={classes.progress} variant="determinate" value ={this.state.completed}/>
+            </TableCell>
+          </TableRow>
          }
           </TableBody>
         </Table>
