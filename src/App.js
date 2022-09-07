@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
   root : {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: "auto"
   },
   table : {
@@ -20,7 +20,7 @@ const styles = theme => ({
   }
 })
 
-const customers = [{
+/*const customers = [{
   'id': 1,
   'image' : 'https://placeimg.com/64/64/1',
   'name': '강정호',
@@ -45,7 +45,7 @@ const customers = [{
   'job' : '충무공'
 }
 ]
-
+*/
 class App extends Component {
   render() {
     const { classes } = this.props;

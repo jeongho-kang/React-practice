@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableHead from '@mui/material/TableHead'
@@ -9,19 +10,18 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import { withStyles } from '@material-ui/core/styles';
 import { CircularProgress } from '@mui/material';
-import { ThemeProvider } from '@emotion/react';
 
 const styles = theme => ({
   root : {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: "auto"
   },
   table : {
     minWidth: 1000
   },
   Progress : {
-    margin:theme.spacing.unit *2
+    margin:theme.spacing(2)
   }
 });
 
@@ -56,6 +56,7 @@ class App extends Component {
   render() {
     const { classes } = this.props;
     return (
+      <div>
       <Paper className ={classes.root}>
         <Table className = {classes.table}>
         <TableHead>
@@ -83,7 +84,7 @@ class App extends Component {
              );
           }) :
           <TableRow>
-            <TableCell colspan="6" align="center">
+            <TableCell colSpan="6" align="center">
               <CircularProgress className={classes.progress} variant="determinate" value ={this.state.completed}/>
             </TableCell>
           </TableRow>
@@ -91,6 +92,8 @@ class App extends Component {
           </TableBody>
         </Table>
       </Paper>
+      <CustomerAdd/>
+      </div>
     );
   }
   
