@@ -6,8 +6,8 @@ class CustomerDelete extends React.Component {
         fetch(url,{
             method: 'DELETE'
         });
+        window.location.reload();
         // 삭제 후 새롭게 바뀐 고객화면을 다시 화면에 출력
-        this.props.stateRefresh();
     }
 
     render() {
