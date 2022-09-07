@@ -20,35 +20,10 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
+const multer = require('multer');
+const { connect } = require('http2');
+const upload = multer({dest: './upload'})
 
-/*app.get('/api/customers', (req, res) => {
-    res.send([
-    {
-    'id': 1,
-    'image' : 'https://placeimg.com/64/64/1',
-    'name': '강정호',
-    'birthday' : 980307,
-    'gender' : '남자',
-    'job' : '대학생'
-  },
-  {
-    'id': 2,
-    'image' : 'https://placeimg.com/64/64/2',
-    'name': '홍길동',
-    'birthday' : 450204,
-    'gender' : '남자',
-    'job' : '개발자'
-  },
-  {
-    'id': 3,
-    'image' : 'https://placeimg.com/64/64/3',
-    'name': '이순신',
-    'birthday' : 950512,
-    'gender' : '남자',
-    'job' : '충무공'
-  }]);
-});
-*/
 app.get('/api/customers', (req, res) => {
   connection.query(
       "SELECT * FROM customer",
@@ -58,5 +33,44 @@ app.get('/api/customers', (req, res) => {
 );
 });
 
+//이미지 파일 처리하는 부분
+app.use('/image', express.static('./upload'));//'./image' 말고 '/image'하니까 이미지 잘 출력된다......
+app.post('/api/customers', upload.single('image'), (req, res) =>{ // var대신 let을 사용한다. 
+  let sql ='insert into CUSTOMER values (null,?,?,?,?,?)';
+  //let image ='/image/' + req.file.filename; //이렇게 하니까 사진은 디비에 올라가긴 하는데 깨져서 올라감...
+  let image ='http://localhost:5000/image/' + req.file.filename;
+  let name = req.body.name;
+  let birthday = req.body.birthday;
+  let gender = req.body.gender;
+  let job = req.body.job;
+
+
+  //디버깅
+  // console.log(name);
+  // console.log(image);
+  // console.log(birthday);
+  // console.log(gender);
+  // console.log(job);
+
+
+  let params=[image, name, birthday, gender, job];
+  connection.query(sql, params, 
+    (err, rows, field) => {
+        res.send(rows);
+        //디버깅용
+        console.log(image);
+    }
+  );
+});
+
+
+app.delete('/api/customers/:id', (req,res)=> {
+  let sql = 'UPDATE CUSTOMER SET isDeleted =1 WHERE id =?'; // 삭제완료후 알려줌
+  let params =[req.params.id];
+  connection.query(sql,params,(err,rows,fields) => {
+    res.send(rows);
+  })
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+

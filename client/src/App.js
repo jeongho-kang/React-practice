@@ -35,6 +35,25 @@ class App extends Component {
     customers : "",
     completed : 0
   }
+
+  constructor(props) {
+    super(props);
+    this.state={
+      customers:'',
+      completed:0
+    }
+  }
+
+  stateRefresh =() => {
+    this.setState({
+      customers:'',
+      completed : 0
+    });
+    this.callApi()
+    .then(res => this.setState({customers:res}))
+    .catch(err => console.log(err));
+  }
+
   // 실제 api 서버에 접근하도록 componentDidMount 를 사용한다.
   componentDidMount() {
     this.timer=setInterval(this.progress, 20); // 0.02초마다 프로그레스 설정
@@ -67,6 +86,7 @@ class App extends Component {
               <TableCell>생년월일</TableCell>
               <TableCell>성별</TableCell>
               <TableCell>직업</TableCell>
+              <TableCell>설정</TableCell>
             </TableRow>
           </TableHead> 
           <TableBody>
@@ -92,7 +112,7 @@ class App extends Component {
           </TableBody>
         </Table>
       </Paper>
-      <CustomerAdd/>
+      <CustomerAdd steteRefresh={this.stateRefresh}/>
       </div>
     );
   }
